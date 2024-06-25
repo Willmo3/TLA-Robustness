@@ -1,12 +1,11 @@
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.arguments.argument
 
 class TlaRobustness : CliktCommand() {
-    // Options:
-    private val sysPath by option("--sys", "-s", help="tla+ model of the system")
-    private val sysConfig by option("--sys-config", "-c", help="tla+ configuration file for the system")
-    private val envPath by option("--env", "-e", help="tla+ model of the environment")
-    private val envConfig by option("--env-config", "-p", help = "tla+ configuration file for environment")
+    private val sysPath by argument(name="[system model path]", help="tla+ model of the system")
+    private val sysConfig by argument(name="[system config path]", help="tla+ configuration file for the system")
+    private val envPath by argument(name="[environment path]", help="tla+ model of the environment")
+    private val envConfig by argument(name="[environment config path]", help = "tla+ configuration file for environment")
 
     override fun run() {
         println("Tla Robustness")
