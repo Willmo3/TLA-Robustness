@@ -13,5 +13,5 @@ TLA-Robustness uses this functionality from Recomp-Verify to bridge the gap betw
 
 ### Installation
 1. Clone the repository
-2. run the setup.sh script. This will install the LTS-Robustness and Recomp-Verify jars provided with this distribution as local maven repositories on your system. Since these are stored in your home directory (probably in ~/.m2), no superuser priveleges are required.
+2. run the setup.sh script. This will install the LTS-Robustness and Recomp-Verify jars provided with this distribution as local maven repositories on your system. Since these are stored in your home directory (probably in ~/.m2), no superuser privileges are required.
 3. Run mvn install. The output jar is in the target directory!
