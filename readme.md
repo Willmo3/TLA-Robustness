@@ -12,6 +12,8 @@ CMU SoDA and others have formalized this notion.
 
 The overall behavior of a system is dictated both by factors within a system, such as its programming, and factors outside of the system's control, like network channels or user interactions. In *Safe Environmental Envelopes of Discrete Systems,* by Meira-Góes et al (https://eskang.github.io/assets/papers/cav23.pdf), the notion of software robustness is defined as the maximum number of environmental deviations a system can withstand while still satisfying its safety properties.
 
+In other words: what can change outside of a software system so that the inside of that system keeps working?
+
 ### LTS-Robustness
 
 With Meira-Góes et al's formal definition of software robustness came a tool for calculating robustness: CMU SoDA's LTS-Robustness! LTS-Robustness uses labelled transition systems for its calculations (hence the name!)
