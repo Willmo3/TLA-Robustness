@@ -33,7 +33,15 @@ TLA-Robustness bridges the gap between LTS-Robustness and TLA+. CMU SoDA's Recom
 
 Additionally, all calculations are performed in main memory, saving both space and time!
 
+
 ## Installation
+
+### Required Software
+* Java. TLA-Robustness has been tested on OpenJDK 17.
+* Maven.
+
+### Procedure
+
 1. Clone the repository
 2. run the setup.sh script. This will install the LTS-Robustness and Recomp-Verify jars provided with this distribution as local maven repositories on your system. Since these are stored in your home directory (probably in ~/.m2), no superuser privileges are required.
 3. Run mvn install. The output jar is in the target directory!
@@ -42,14 +50,14 @@ Note: two jar files will be produced. Do not run original-tla-robustness! This i
 
 ## Usage
 
-### Requirements
+### Requirements to Run
 Four files are required for running TLA-Robustness.
 1. The TLA+ model for the system
 2. The TLA+ config file for the system
 3. The TLA+ model for the environment
 4. The TLA+ config file for the model
 
-#### File formatting
+#### File Formatting
 These files should represent valid, TLC-verifiable TLA+ models. Because we calculate robustness assuming a safe system to begin with, models that already violate their own safety properties cannot be checked.
 
 In addition, there are some interface requirements to the configuration files:
