@@ -1,6 +1,10 @@
+import cmu.isr.ts.lts.ltsa.FSPWriter
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import tlc2.TLC
+import java.io.File
+import java.io.FileWriter
+import kotlin.system.exitProcess
 
 /**
  * # TlaRobustness
@@ -41,8 +45,31 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         println("Environment config: $envConfig")
         println("Environment: $envPath")
 
+        // Base system includes no safety properties.
+        // Hence, a config w/o invariants is needed.
+        val noInvsPath = "no-invs.cfg"
+        if (!File(noInvsPath).exists()) {
+            File(noInvsPath).writer().write("SPECIFICATION spec")
+        }
+
+        // Prepare LTS for base system without safety property.
         val sysTLC = TLC()
-        sysTLC.modelCheck(sysPath, sysConfig, false)
+        sysTLC.modelCheck(sysPath, noInvsPath)
+        FSPWriter.write(System.out, sysTLC.ltsBuilder.toIncompleteDetAutWithoutAnErrorState())
+
+        // Prepare LTS for system safety property.
+        // This includes error states.
+        val sysPropTLC = TLC()
+        sysPropTLC.modelCheck(sysPath, sysConfig)
+        FSPWriter.write(System.out, sysPropTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState())
+
+        // Prepare LTS for env w/ envp
+        val envTLC = TLC()
+        envTLC.modelCheck(envPath, envConfig)
+        FSPWriter.write(System.out, envTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState())
+
+        // TLC convention: hangs unless explicitly exited.
+        exitProcess(0)
     }
 }
 
