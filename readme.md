@@ -3,11 +3,33 @@
 Generate the robustness of a software system using plain .tla files!
 
 ## Introduction
-TLA-Robustness bridges the gap between CMU SoDA's LTS-Robustness tool (https://github.com/iandardik/LTS-Robustness) and TLA+.
 
-Currently, LTS-Robustness requires all input systems to be in fsp format, meaning that TLA+ specifications must be manually converted. However, CMU SoDA's Recomp-Verify (https://github.com/cmu-soda/recomp-verify) can translate TLA+ specs into fsp format. 
+### The Notion of Software Robustness
 
-TLA-Robustness uses this functionality from Recomp-Verify to bridge the gap between TLA+ and LTS-Robustness, allowing users to perform the Cav'23 robustness calculation algorithm (https://eskang.github.io/assets/papers/cav23.pdf) on standard TLA+ files!
+Implicitly, robust software is resilient to mistakes. When things go awry, robust software ought to keep functioning! 
+
+CMU SoDA and others have formalized this notion. 
+
+The overall behavior of a system is dictated both by factors within a system, such as its programming, and factors outside of the system's control, like network channels or user interactions. In *Safe Environmental Envelopes of Discrete Systems,* by Meira-Góes et al (https://eskang.github.io/assets/papers/cav23.pdf), the notion of software robustness is defined as the maximum number of environmental deviations a system can withstand while still satisfying its safety properties.
+
+### LTS-Robustness
+
+With Meira-Góes et al's formal definition of software robustness came a tool for calculating robustness: CMU SoDA's LTS-Robustness! LTS-Robustness uses labelled transition systems for its calculations (hence the name!)
+
+Given an LTS for the system, the system safety property, the environment, and the environment property, all in fsp form, LTS-Robustness outputs $\Delta$, the set of all maximal sets of transitions which can be added to the environment without breaking compliance with a system's safety properties. 
+
+Intuitively, this $\Delta$ is exactly how much change you can get away with in the external environment before the system stops working.
+
+#### The Problem:
+
+Currently, LTS-Robustness requires all input systems to be in fsp format, meaning that TLA+ specifications, themselves implicitly transition systems, must be manually converted. This tedious maneuver not only wastes user time, thanks to the state space explosion, it also pumps out huge files!
+
+
+### TLA Robustness
+
+TLA-Robustness bridges the gap between LTS-Robustness and TLA+. CMU SoDA's Recomp-Verify (https://github.com/cmu-soda/recomp-verify) can translate TLA+ specs into fsp format. TLA-Robustness uses this functionality from Recomp-Verify to bridge the gap between TLA+ and LTS-Robustness, allowing users to perform the Cav'23 robustness calculation algorithm on standard TLA+ files!
+
+Additionally, all calculations are performed in main memory, saving both space and time!
 
 ## Installation
 1. Clone the repository
