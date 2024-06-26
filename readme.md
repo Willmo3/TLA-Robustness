@@ -41,12 +41,24 @@ Additionally, all calculations are performed in main memory, saving both space a
 Note: two jar files will be produced. Do not run original-tla-robustness! This is not shaded with the necessary dependencies.
 
 ## Usage
+
+### Requirements
 Four files are required for running TLA-Robustness.
 1. The TLA+ model for the system
 2. The TLA+ config file for the system
 3. The TLA+ model for the environment
 4. The TLA+ config file for the model
 
+#### File formatting
+These files should represent valid, TLC-verifiable TLA+ models. Because we calculate robustness assuming a safe system to begin with, models that already violate their own safety properties cannot be checked.
+
+In addition, there are some interface requirements to the configuration files:
+* Config files should be of the form `SPECIFICATION Spec`. Please do not provide `INIT` or `NEXT` in your configs.
+* We do not support liveness properties, so only define invariants!
+
+We will automatically generate an invariant-free config for the base system, so providing a system configuration with safety properties included is enough for both the system and the safety properties.
+
+### Running
 To run: `java -jar tla-robustness [system model path] [system config path] [env model path] [env config path]`
 
 The final robustness will be outputted! (once the program is finished. It's currently under construction!)
