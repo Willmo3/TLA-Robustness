@@ -1,6 +1,6 @@
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.types.file
+import tlc2.TLC
 
 /**
  * # TlaRobustness
@@ -23,13 +23,13 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
     // ***** ARGUMENTS ***** //
 
     private val sysPath
-        by argument(name="[system model path]", help="tla+ model of the system").file(mustExist = true)
+        by argument(name="[system model path]", help="tla+ model of the system")
     private val sysConfig
-        by argument(name="[system config path]", help="tla+ configuration file for the system").file(mustExist = true)
+        by argument(name="[system config path]", help="tla+ configuration file for the system")
     private val envPath
-        by argument(name="[env path]", help="tla+ model of the environment").file(mustExist = true)
+        by argument(name="[env path]", help="tla+ model of the environment")
     private val envConfig
-        by argument(name="[env config path]", help = "tla+ configuration file for environment").file(mustExist = true)
+        by argument(name="[env config path]", help = "tla+ configuration file for environment")
 
 
     // ***** MAIN ***** //
@@ -40,6 +40,9 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         println("System config: $sysConfig")
         println("Environment config: $envConfig")
         println("Environment: $envPath")
+
+        val sysTLC = TLC()
+        sysTLC.modelCheck(sysPath, sysConfig, false)
     }
 }
 
