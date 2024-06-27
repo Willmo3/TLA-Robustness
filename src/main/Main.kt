@@ -3,7 +3,6 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import tlc2.TLC
 import java.io.File
-import java.io.FileWriter
 import kotlin.system.exitProcess
 
 /**
