@@ -1,3 +1,7 @@
+import cmu.isr.api.calculateDelta
+import cmu.isr.ts.DetLTS
+import cmu.isr.ts.lts.CompactDetLTS
+import cmu.isr.ts.lts.CompactLTS
 import cmu.isr.ts.lts.ltsa.FSPWriter
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -38,12 +42,6 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
     // ***** MAIN ***** //
 
     override fun run() {
-        println("Tla Robustness")
-        println("System: $sysPath")
-        println("System config: $sysConfig")
-        println("Environment config: $envConfig")
-        println("Environment: $envPath")
-
         // Base system includes no safety properties.
         // Hence, a config w/o invariants is needed.
         val noInvsPath = "no-invs.cfg"
@@ -54,20 +52,22 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         // Prepare LTS for base system without safety property.
         val sysTLC = TLC()
         sysTLC.modelCheck(sysPath, noInvsPath)
-        FSPWriter.write(System.out, sysTLC.ltsBuilder.toIncompleteDetAutWithoutAnErrorState())
+        val sysLTS = sysTLC.ltsBuilder.toIncompleteDetAutWithoutAnErrorState()
 
         // Prepare LTS for system safety property.
         // This includes error states.
         val sysPropTLC = TLC()
         sysPropTLC.modelCheck(sysPath, sysConfig)
-        FSPWriter.write(System.out, sysPropTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState())
+        // Unlike others, sys property must be a deterministic LTS
+        val sysPropLTS = toDeterministic(sysPropTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState() as CompactLTS)
 
         // Prepare LTS for env w/ envp
         val envTLC = TLC()
         envTLC.modelCheck(envPath, envConfig)
-        FSPWriter.write(System.out, envTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState())
+        val envLTS = envTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState()
 
-        // TLC convention: hangs unless explicitly exited.
+        println(calculateDelta(envLTS, sysLTS, sysPropLTS))
+        // By TLC convention, explicitly exit process when finished.
         exitProcess(0)
     }
 }
