@@ -51,13 +51,14 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         // Hence, a config w/o invariants is needed.
         val noInvsPath = "no-invs.cfg"
         if (!File(noInvsPath).exists()) {
-            File(noInvsPath).writer().write("SPECIFICATION spec")
+            File(noInvsPath).writer().write("SPECIFICATION Spec")
         }
 
         // Prepare LTS for base system without safety property.
         val sysTLC = TLC()
         sysTLC.modelCheck(sysPath, noInvsPath)
         val sysLTS = sysTLC.ltsBuilder.toIncompleteDetAutWithoutAnErrorState()
+        verbosePrint("System LTS:")
         verbosePrint(sysLTS)
 
         // Prepare LTS for system safety property.
@@ -66,12 +67,14 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         sysPropTLC.modelCheck(sysPath, sysConfig)
         // Unlike others, sys property must be a deterministic LTS
         val sysPropLTS = toDeterministic(sysPropTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState() as CompactLTS)
+        verbosePrint("System Property LTS:\n")
         verbosePrint(sysPropLTS)
 
         // Prepare LTS for env w/ envp
         val envTLC = TLC()
         envTLC.modelCheck(envPath, envConfig)
         val envLTS = envTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState()
+        verbosePrint("Env LTS:\n")
         verbosePrint(envLTS)
 
         println(calculateDelta(envLTS, sysLTS, sysPropLTS))
@@ -86,6 +89,12 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
     private fun verbosePrint(lts: LTS<*, *>) {
         if (verbose)
             FSPWriter.write(System.out, lts)
+    }
+
+    // If verbose flag enabled, print this LTS to stdout.
+    private fun verbosePrint(content: String) {
+        if (verbose)
+            println(content)
     }
 }
 
