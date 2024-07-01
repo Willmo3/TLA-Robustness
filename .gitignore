@@ -1,6 +1,8 @@
 ### Assorted artifacts
 dependency-reduced-pom.xml
 
+*states*
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
