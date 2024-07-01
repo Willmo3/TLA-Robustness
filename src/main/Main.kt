@@ -1,7 +1,5 @@
 import cmu.isr.api.calculateDelta
-import cmu.isr.ts.DetLTS
 import cmu.isr.ts.LTS
-import cmu.isr.ts.lts.CompactDetLTS
 import cmu.isr.ts.lts.CompactLTS
 import cmu.isr.ts.lts.ltsa.FSPWriter
 import com.github.ajalt.clikt.core.CliktCommand
