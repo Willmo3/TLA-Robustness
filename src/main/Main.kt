@@ -60,6 +60,8 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         val sysTLC = TLC()
         sysTLC.modelCheck(sysPath, noInvsPath)
         val sysLTS = sysTLC.ltsBuilder.toIncompleteDetAutWithoutAnErrorState()
+
+        // DEBUG INFO
         verbosePrint("System LTS:")
         verbosePrint(sysLTS)
         verbosePrint("")
@@ -70,6 +72,8 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         sysPropTLC.modelCheck(sysPath, sysConfig)
         // Unlike others, sys property must be a deterministic LTS
         val sysPropLTS = toDeterministic(sysPropTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState() as CompactLTS)
+
+        // DEBUG INFO
         verbosePrint("System Property LTS:")
         verbosePrint(sysPropLTS)
         verbosePrint("")
@@ -78,6 +82,8 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         val envTLC = TLC()
         envTLC.modelCheck(envPath, envConfig)
         val envLTS = envTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState()
+
+        // DEBUG INFO
         verbosePrint("Env LTS:")
         verbosePrint(envLTS)
         verbosePrint("")
