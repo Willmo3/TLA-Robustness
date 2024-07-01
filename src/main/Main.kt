@@ -51,7 +51,9 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         // Hence, a config w/o invariants is needed.
         val noInvsPath = "no-invs.cfg"
         if (!File(noInvsPath).exists()) {
-            File(noInvsPath).writer().write("SPECIFICATION Spec")
+            with(File(noInvsPath)) {
+                writer().write("SPECIFICATION Spec")
+            }
         }
 
         // Prepare LTS for base system without safety property.
