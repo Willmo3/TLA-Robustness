@@ -1,10 +1,13 @@
 import cmu.isr.api.calculateDelta
 import cmu.isr.ts.DetLTS
+import cmu.isr.ts.LTS
 import cmu.isr.ts.lts.CompactDetLTS
 import cmu.isr.ts.lts.CompactLTS
 import cmu.isr.ts.lts.ltsa.FSPWriter
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 import tlc2.TLC
 import java.io.File
 import kotlin.system.exitProcess
@@ -37,6 +40,8 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         by argument(name="[env path]", help="tla+ model of the environment")
     private val envConfig
         by argument(name="[env config path]", help = "tla+ configuration file for environment")
+    private val verbose
+        by option("-v", "--verbose", help="print LTSes").flag()
 
 
     // ***** MAIN ***** //
@@ -53,6 +58,7 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         val sysTLC = TLC()
         sysTLC.modelCheck(sysPath, noInvsPath)
         val sysLTS = sysTLC.ltsBuilder.toIncompleteDetAutWithoutAnErrorState()
+        verbosePrint(sysLTS)
 
         // Prepare LTS for system safety property.
         // This includes error states.
@@ -60,15 +66,26 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         sysPropTLC.modelCheck(sysPath, sysConfig)
         // Unlike others, sys property must be a deterministic LTS
         val sysPropLTS = toDeterministic(sysPropTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState() as CompactLTS)
+        verbosePrint(sysPropLTS)
 
         // Prepare LTS for env w/ envp
         val envTLC = TLC()
         envTLC.modelCheck(envPath, envConfig)
         val envLTS = envTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState()
+        verbosePrint(envLTS)
 
         println(calculateDelta(envLTS, sysLTS, sysPropLTS))
         // By TLC convention, explicitly exit process when finished.
         exitProcess(0)
+    }
+
+
+    // ***** HELPERS ***** //
+
+    // If verbose flag enabled, print this LTS to stdout.
+    private fun verbosePrint(lts: LTS<*, *>) {
+        if (verbose)
+            FSPWriter.write(System.out, lts)
     }
 }
 
