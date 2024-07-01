@@ -62,6 +62,7 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         val sysLTS = sysTLC.ltsBuilder.toIncompleteDetAutWithoutAnErrorState()
         verbosePrint("System LTS:")
         verbosePrint(sysLTS)
+        verbosePrint("")
 
         // Prepare LTS for system safety property.
         // This includes error states.
@@ -69,15 +70,17 @@ class TlaRobustness : CliktCommand(help="Generate the robustness for a software 
         sysPropTLC.modelCheck(sysPath, sysConfig)
         // Unlike others, sys property must be a deterministic LTS
         val sysPropLTS = toDeterministic(sysPropTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState() as CompactLTS)
-        verbosePrint("System Property LTS:\n")
+        verbosePrint("System Property LTS:")
         verbosePrint(sysPropLTS)
+        verbosePrint("")
 
         // Prepare LTS for env w/ envp
         val envTLC = TLC()
         envTLC.modelCheck(envPath, envConfig)
         val envLTS = envTLC.ltsBuilder.toIncompleteDetAutIncludingAnErrorState()
-        verbosePrint("Env LTS:\n")
+        verbosePrint("Env LTS:")
         verbosePrint(envLTS)
+        verbosePrint("")
 
         println(calculateDelta(envLTS, sysLTS, sysPropLTS))
         // By TLC convention, explicitly exit process when finished.
